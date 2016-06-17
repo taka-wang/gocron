@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"time"
 
 	"github.com/taka-wang/gocron"
 )
@@ -37,8 +38,8 @@ func main() {
 	gocron.Every(1).Monday().At("18:30").Do(task)
 
 	// remove, clear and next_run
-	_, time := gocron.NextRun()
-	fmt.Println(time)
+	_, ttt := gocron.NextRun()
+	fmt.Println(ttt)
 
 	// gocron.Remove(task)
 	// gocron.Clear()
@@ -51,4 +52,7 @@ func main() {
 	s := gocron.NewScheduler()
 	s.Every(3).Seconds().Do(task)
 	s.Start()
+	for {
+		time.Sleep(300 * time.Millisecond)
+	}
 }

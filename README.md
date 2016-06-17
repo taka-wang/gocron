@@ -17,6 +17,7 @@ package main
 import (
 	"fmt"
 	"github.com/taka-wang/gocron"
+	"time"
 )
 
 func task() {
@@ -64,6 +65,9 @@ func main() {
 	s := gocron.NewScheduler()
 	s.Every(3).Seconds().Do(task)
 	s.Start()
+	for {
+		time.Sleep(300 * time.Millisecond)
+	}
 
 }
 ```
