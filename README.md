@@ -33,7 +33,7 @@ func main() {
 	gocron.Every(1).Second().Do(taskWithParams, 1, "hello")
 
 	// Do jobs without params
-	gocron.Every(1).Second().Do(task)
+	mjob := gocron.Every(1).Second().Do(task)
 	gocron.Every(2).Seconds().Do(task)
 	gocron.Every(1).Minute().Do(task)
 	gocron.Every(2).Minutes().Do(task)
@@ -54,7 +54,7 @@ func main() {
 	_, time := gocron.NextRun()
 	fmt.Println(time)
 
-	gocron.Remove(task)
+	gocron.Remove(mjob)
 	gocron.Clear()
 
 	// function Start start all the pending jobs
@@ -71,8 +71,7 @@ func main() {
 
 }
 ```
-and full test cases and [document](http://godoc.org/github.com/jasonlvhit/gocron) will be coming soon.
 
-Once again, thanks to the great works of Ruby clockwork and Python schedule package. BSD license is used, see the file License for detail.
+# Todo
 
-Hava fun!
+Add key to job struct for modified version remove function.
