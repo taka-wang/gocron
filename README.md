@@ -1,6 +1,5 @@
 ## goCron: A Golang Job Scheduling Package.
-[![GoDoc](https://godoc.org/github.com/golang/gddo?status.svg)](http://godoc.org/github.com/jasonlvhit/gocron)
-[![Stories in Ready](https://badge.waffle.io/jasonlvhit/gocron.png?label=ready&title=Ready)](https://waffle.io/jasonlvhit/gocron)
+[![GoDoc](https://godoc.org/github.com/golang/gddo?status.svg)](http://godoc.org/github.com/taka-wang/gocron)
 
 goCron is a Golang job scheduling package which lets you run Go functions periodically at pre-determined interval using a simple, human-friendly syntax.
 
@@ -17,7 +16,7 @@ package main
 
 import (
 	"fmt"
-	"github.com/jasonlvhit/gocron"
+	"github.com/taka-wang/gocron"
 )
 
 func task() {
@@ -58,13 +57,13 @@ func main() {
 	gocron.Clear()
 
 	// function Start start all the pending jobs
-	<- gocron.Start()
+	gocron.Start()
 
 	// also , you can create a your new scheduler,
 	// to run two scheduler concurrently
 	s := gocron.NewScheduler()
 	s.Every(3).Seconds().Do(task)
-	<- s.Start()
+	s.Start()
 
 }
 ```
