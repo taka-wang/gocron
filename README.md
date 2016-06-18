@@ -60,6 +60,9 @@ func main() {
 
 	// function Start start all the pending jobs
 	gocron.Start()
+	
+	// trigger emergency job
+	gocron.Emergency().Do(taskWithParams, 9, "emergency")
 
 	// also , you can create a your new scheduler,
 	// to run two scheduler concurrently
@@ -72,3 +75,7 @@ func main() {
 
 }
 ```
+
+# TODO
+- implement emergency trigger
+- key value map for jobs

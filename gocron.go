@@ -31,6 +31,11 @@ func Every(interval uint64) *Job {
 	return defaultScheduler.Every(interval)
 }
 
+// Every schedules a new emergency job in the default scheduler
+func Emergency() *Job {
+	return defaultScheduler.Emergency()
+}
+
 // RunAll Runs all of the jobs that are scheduled to run
 //
 // Please note that it is *intended behavior that `RunPending()`

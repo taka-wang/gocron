@@ -286,9 +286,15 @@ func TestScheduler(t *testing.T) {
 
 		s.Start()
 
+		fmt.Println("add emergency job 8", time.Now().Format("2006-01-02 15:04:05.000"))
+		s.Emergency().Do(taskWithParams, 8, "emergency")
+
 		time.Sleep(5 * time.Second)
 
-		s.Every(1).Seconds().Do(taskWithParams, 8, "1s")
+		fmt.Println("add emergency job 9", time.Now().Format("2006-01-02 15:04:05.000"))
+		s.Emergency().Do(taskWithParams, 9, "emergency")
+
+		s.Every(1).Seconds().Do(taskWithParams, 10, "1s")
 		time.Sleep(10 * time.Second)
 
 		// debug

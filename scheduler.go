@@ -15,6 +15,9 @@ type Scheduler interface {
 	// Every creates a new job, and adds it to the `Scheduler`
 	Every(interval uint64) *Job
 
+	// Emergency create a emergency job, and adds it to the `Scheduler`
+	Emergency() *Job
+
 	// IsRunning returns true if the job  has started
 	IsRunning() bool
 
@@ -55,6 +58,7 @@ func NewScheduler() Scheduler {
 
 // Scheduler contains jobs and a loop to run the jobs
 type scheduler struct {
+	ejobs     []*Job // Emergency jobs
 	jobs      []*Job
 	isRunning bool
 	isStopped chan bool
@@ -111,12 +115,32 @@ func (s *scheduler) Every(interval uint64) *Job {
 	return job
 }
 
+// Emergency schedules a new emergency job
+func (s *scheduler) Emergency() *Job {
+	s.mutex.Lock()
+	defer s.mutex.Unlock()
+
+	// cheat the interval
+	job := newJob(1).Location(s.location)
+	s.ejobs = append(s.ejobs, job)
+
+	return job
+}
+
 // runPending runs all of the jobs pending at this time
 func (s *scheduler) runPending(now time.Time) {
 	s.mutex.Lock()
 	defer s.mutex.Unlock()
 
+	// run emergency jobs
+	for _, job := range s.ejobs {
+		job.run()
+	}
+	// clear ejobs queue
+	s.ejobs = []*Job{}
+
 	sort.Sort(s)
+	// run jobs
 	for _, job := range s.jobs {
 		if !job.isInit() {
 			// set lastRun and nextRun
