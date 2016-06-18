@@ -43,7 +43,8 @@ type Job struct {
 	// the parameters that will be passed to this job upon execution
 	tasksParams [][]reflect.Value
 
-	// time units the `interval` is the quantity of , e.g. `time.Minute`, `time.Hour`, `Week`...
+	// time units the `interval` is the quantity of ,
+	// e.g. `time.Minute`, `time.Hour`, `Week`...
 	unit time.Duration
 
 	// optional time at which this job runs
@@ -107,7 +108,8 @@ func (j *Job) run() {
 	j.nextRun = j.lastRun.Add(time.Duration(j.interval) * j.unit)
 }
 
-// isInit returns true if the the `lastRun` and `nextRun` time have been initialized by `init()`
+// isInit returns true if the the `lastRun` and `nextRun` time
+// have been initialized by `init()`
 func (j *Job) isInit() bool {
 	return !j.lastRun.IsZero() && !j.nextRun.IsZero()
 }

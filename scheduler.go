@@ -25,16 +25,20 @@ type Scheduler interface {
 	// The default location is `time.Local`
 	Location(*time.Location)
 
-	// NextRun returns the next next job to be run and the time in which it will be run
+	// NextRun returns the next next job to be run and the time in which
+	// it will be run
 	NextRun() (*Job, time.Time)
 
-	// Remove removes an individual job from the scheduler. It returns true if the job was found and removed from the `Scheduler`
+	// Remove removes an individual job from the scheduler. It returns true
+	// if the job was found and removed from the `Scheduler`
 	Remove(*Job) bool
 
-	// Depricated: RunAll runs all of the jobs regardless of wether or not they are pending
+	// Depricated: RunAll runs all of the jobs regardless of wether or not
+	// they are pending
 	RunAll()
 
-	// RunAllWithDelay runs all of the jobs regardless of wether or not they are pending with a delay
+	// RunAllWithDelay runs all of the jobs regardless of wether or not
+	// they are pending with a delay
 	RunAllWithDelay(time.Duration)
 
 	// Depricated: RunPending runs all of the pending jobs
@@ -66,17 +70,20 @@ type scheduler struct {
 	mutex     sync.Mutex
 }
 
-// Len returns the number of jobs that have been scheduled. It is part of the `sort.Interface` interface
+// Len returns the number of jobs that have been scheduled.
+// It is part of the `sort.Interface` interface
 func (s *scheduler) Len() int {
 	return len(s.jobs)
 }
 
-// Swap swaps the order of two jobs in the backing slice. It is part of the `sort.Interface` interface
+// Swap swaps the order of two jobs in the backing slice.
+// It is part of the `sort.Interface` interface
 func (s *scheduler) Swap(i, j int) {
 	s.jobs[i], s.jobs[j] = s.jobs[j], s.jobs[i]
 }
 
-// Less swaps the order of two jobs in the backing slice. It is part of the `sort.Interface` interface
+// Less swaps the order of two jobs in the backing slice.
+// It is part of the `sort.Interface` interface
 func (s *scheduler) Less(i, j int) bool {
 	return s.jobs[j].nextRun.After(s.jobs[i].nextRun)
 }
@@ -161,18 +168,7 @@ func (s *scheduler) RunPending() {
 
 // Depricated: RunAll rungs all jobs regardless if they are scheduled to run or not
 func (s *scheduler) RunAll() {
-	s.mutex.Lock()
-	defer s.mutex.Unlock()
-
-	now := time.Now()
-	sort.Sort(s)
-	for _, job := range s.jobs {
-		if !job.isInit() {
-			job.init(now)
-		}
-		job.run()
-	}
-
+	RunAllWithDelay(0)
 }
 
 // Depricated: RunAllWithDelay all jobs with delay seconds
@@ -184,15 +180,18 @@ func (s *scheduler) RunAllWithDelay(d time.Duration) {
 	sort.Sort(s)
 	for _, job := range s.jobs {
 		if !job.isInit() {
+			// set lastRun and nextRun
 			job.init(now)
 		}
+		// force to run
 		job.run()
 		time.Sleep(d)
 	}
 
 }
 
-// Location sets the default location for every job created with `Scheduler.Every(...)`. By default the location is `time.Local`
+// Location sets the default location for every job created
+// with `Scheduler.Every(...)`. By default the location is `time.Local`
 func (s *scheduler) Location(location *time.Location) {
 	s.location = location
 }
@@ -254,13 +253,15 @@ func (s *scheduler) Start() {
 				s.runPending(now)
 			case <-s.isStopped:
 				s.isRunning = false
-				s.isStopped <- true // send a confirmation message back to the `Stop()` method
+				// send a confirmation message back to the `Stop()` method
+				s.isStopped <- true
 				return
 			}
 		}
 	}()
 
-	// wait until he ticker has been started and all of the jobs have been initialized
+	// wait until he ticker has been started and all of the jobs
+	// have been initialized
 	<-isStarted
 }
 
@@ -280,6 +281,8 @@ func (s *scheduler) Stop() {
 	// only send the stop signal if the scheduler has been started
 	if s.isRunning {
 		s.isStopped <- true
-		<-s.isStopped // wait for the ticker to send a confirmation message back through the stop channel just before it shuts down the ticker loop
+		// wait for the ticker to send a confirmation message back through
+		// the stop channel just before it shuts down the ticker loop
+		<-s.isStopped
 	}
 }
