@@ -60,6 +60,9 @@ type Job struct {
 
 	// location the time of the job takes place in
 	location *time.Location
+
+	// should schedule run this job?
+	enabled bool
 }
 
 // NewJob creates a new job
@@ -71,12 +74,28 @@ func newJob(interval uint64) *Job {
 		interval: interval,
 		location: time.Local,
 		atTime:   -time.Second,
+		enabled:  true,
 	}
+}
+
+// pause disable the job
+func (j *Job) pause() {
+	j.enabled = false
+}
+
+// resume re-enable the job
+func (j *Job) resume() {
+	j.enabled = true
 }
 
 // should run returns true if the job should be run now
 func (j *Job) shouldRun(now time.Time) bool {
-	return now.After(j.nextRun) || now.Equal(j.nextRun)
+	// check job is enabled or not
+	if j.enabled {
+		// current time is after or equal to job's scheduled time
+		return now.After(j.nextRun) || now.Equal(j.nextRun)
+	}
+	return false
 }
 
 // run the job
