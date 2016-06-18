@@ -279,30 +279,36 @@ func TestScheduler(t *testing.T) {
 		s.Every(3).Seconds().Do(taskWithParams, 1, "3s")
 		s.Every(2).Seconds().Do(taskWithParams, 2, "2s")
 		s.Every(5).Seconds().Do(taskWithParams, 3, "5s")
-		s.Every(1).Seconds().Do(taskWithParams, 4, "1s")
-		s.Every(1).Seconds().Do(taskWithParams, 5, "1s")
+		s.Every(1).Seconds().Do(taskWithParams, 4, "1s-4")
+		s.Every(1).Seconds().Do(taskWithParams, 5, "1s-5")
 		s.Every(500).Seconds().Do(taskWithParams, 6, "500s")
-		s.Every(10).Seconds().Do(taskWithParams, 7, "10s")
 
+		s.Every(10).Seconds().Do(taskWithParams, 7, "10s")
+		for _, job := range s.jobs {
+			log("@interval: %d, param: %s", job.interval, job.tasksParams[0])
+		}
 		s.Start()
 
 		fmt.Println("add emergency job 8", time.Now().Format("2006-01-02 15:04:05.000"))
 		s.Emergency().Do(taskWithParams, 8, "emergency")
 
 		time.Sleep(5 * time.Second)
+		for _, job := range s.jobs {
+			log("@@interval: %d, param: %s", job.interval, job.tasksParams[0])
+		}
 
 		fmt.Println("add emergency job 9", time.Now().Format("2006-01-02 15:04:05.000"))
 		s.Emergency().Do(taskWithParams, 9, "emergency")
 
-		s.Every(1).Seconds().Do(taskWithParams, 10, "1s")
-		time.Sleep(10 * time.Second)
+		//s.Every(1).Seconds().Do(taskWithParams, 10, "1s-10")
+		time.Sleep(5 * time.Second)
 
 		// debug
 		for _, job := range s.jobs {
-			log("interval: %d", job.interval)
+			log("interval: %d, param: %s", job.interval, job.tasksParams[0])
 		}
 
-		if s.jobs[5].interval == 10 {
+		if s.jobs[1].interval == 1 {
 			return true
 		}
 		return false
