@@ -36,7 +36,7 @@ func Emergency() *Job {
 	return defaultScheduler.Emergency()
 }
 
-// RunAll Runs all of the jobs that are scheduled to run
+// RunPending Runs all of the jobs that are scheduled to run
 //
 // Please note that it is *intended behavior that `RunPending()`
 // does not run missed jobs*. For example, if you've registered a job
@@ -47,6 +47,7 @@ func RunPending() {
 }
 
 // RunAll runs all jobs of the regardless if they are scheduled to run or not.
+// i.e., runs all jobs immediately
 func RunAll() {
 	defaultScheduler.RunAll()
 }

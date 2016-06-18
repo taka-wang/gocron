@@ -31,13 +31,13 @@ type Scheduler interface {
 	// Remove removes an individual job from the scheduler. It returns true if the job was found and removed from the `Scheduler`
 	Remove(*Job) bool
 
-	// RunAll runs all of the jobs regardless of wether or not they are pending
+	// Depricated: RunAll runs all of the jobs regardless of wether or not they are pending
 	RunAll()
 
 	// RunAllWithDelay runs all of the jobs regardless of wether or not they are pending with a delay
 	RunAllWithDelay(time.Duration)
 
-	// RunPending runs all of the pending jobs
+	// Depricated: RunPending runs all of the pending jobs
 	RunPending()
 
 	// Start starts the scheduler
