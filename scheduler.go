@@ -168,7 +168,11 @@ func (s *scheduler) Remove(j *Job) bool {
 	// TODO: make this a binary search based removal
 	for i, job := range s.jobs {
 		if j == job {
-			s.jobs = append(s.jobs[:i], s.jobs[i+1:]...)
+			// fix potential memory leak problem arrcording to:
+			// https://github.com/golang/go/wiki/SliceTricks
+			copy(s.jobs[i:], s.jobs[i+1:])
+			s.jobs[len(s.jobs)-1] = nil
+			s.jobs = s.jobs[:len(s.jobs)-1]
 			return true
 		}
 	}
