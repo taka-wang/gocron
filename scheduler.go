@@ -212,7 +212,7 @@ func (s *scheduler) Start() {
 
 	// start the scheduler
 	isStarted := make(chan bool)
-	ticker := time.NewTicker(1 * time.Second)
+	ticker := time.NewTicker(200 * time.Millisecond)
 	go func() {
 		for {
 			select {

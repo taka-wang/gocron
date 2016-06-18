@@ -61,7 +61,7 @@ type Job struct {
 	// location the time of the job takes place in
 	location *time.Location
 
-	// should schedule run this job?
+	// should run this job flag
 	enabled bool
 }
 
@@ -100,10 +100,10 @@ func (j *Job) shouldRun(now time.Time) bool {
 
 // run the job
 func (j *Job) run() {
+	j.lastRun = j.nextRun
 	for i, task := range j.tasks {
 		task.Call(j.tasksParams[i])
 	}
-	j.lastRun = j.nextRun
 	j.nextRun = j.lastRun.Add(time.Duration(j.interval) * j.unit)
 }
 
