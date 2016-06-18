@@ -284,14 +284,12 @@ func TestScheduler(t *testing.T) {
 		s.Every(500).Seconds().Do(taskWithParams, 6, "500s")
 		s.Every(10).Seconds().Do(taskWithParams, 7, "10s")
 
-		/*
-			s.Start()
+		s.Start()
 
-			time.Sleep(5 * time.Second)
+		time.Sleep(5 * time.Second)
 
-			s.Every(1).Seconds().Do(taskWithParams, 8, "1s")
-			time.Sleep(10 * time.Second)
-		*/
+		s.Every(1).Seconds().Do(taskWithParams, 8, "1s")
+		time.Sleep(10 * time.Second)
 
 		// debug
 		for _, job := range s.jobs {

@@ -28,6 +28,9 @@ type Scheduler interface {
 	// Remove removes an individual job from the scheduler. It returns true if the job was found and removed from the `Scheduler`
 	Remove(*Job) bool
 
+	// RemoveAll remove all jobs
+	RemoveAll()
+
 	// RunAll runs all of the jobs regardless of wether or not they are pending
 	RunAll()
 
@@ -119,6 +122,7 @@ func (s *scheduler) runPending(now time.Time) {
 	sort.Sort(s)
 	for _, job := range s.jobs {
 		if !job.isInit() {
+			// set lastRun and nextRun
 			job.init(now)
 		}
 		if job.shouldRun(now) {
@@ -189,6 +193,14 @@ func (s *scheduler) Remove(j *Job) bool {
 	}
 
 	return false
+}
+
+// Remove all jobs from the queue
+func (s *scheduler) RemoveAll() {
+	s.mutex.Lock()
+	defer s.mutex.Unlock()
+
+	s.jobs = s.jobs[:0]
 }
 
 // Clear deletes all scheduled jobs
