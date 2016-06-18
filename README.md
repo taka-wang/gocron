@@ -77,5 +77,4 @@ func main() {
 ```
 
 # TODO
-- implement emergency trigger
 - key value map for jobs
