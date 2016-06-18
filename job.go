@@ -336,7 +336,7 @@ func (j *Job) Week() *Job {
 // Example
 //
 //  // ...
-//  est, err := time.LoadLocation("America/New_York")
+//  est, err := time.LoadLocation("Asia/Taipei")
 //  if err != nil { // you probably haven't set up your server correctly ;)
 //  	panic(err)
 //  }
