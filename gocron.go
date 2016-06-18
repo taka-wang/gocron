@@ -31,7 +31,7 @@ func Every(interval uint64) *Job {
 	return defaultScheduler.Every(interval)
 }
 
-// Every schedules a new emergency job in the default scheduler
+// Emergency schedules a new emergency job in the default scheduler
 func Emergency() *Job {
 	return defaultScheduler.Emergency()
 }
