@@ -8,23 +8,15 @@ import (
 
 // Scheduler keeps a slice of jobs that it executes at a regular interval
 type Scheduler interface {
-	// Start starts the scheduler
-	Start()
 
-	// IsRunning returns true if the job  has started
-	IsRunning() bool
-
-	// Stop stops the scheduler from executing jobs
-	Stop()
+	// Clear removes all of the jobs that have been added to the scheduler
+	Clear()
 
 	// Every creates a new job, and adds it to the `Scheduler`
 	Every(interval uint64) *Job
 
-	// Remove removes an individual job from the scheduler. It returns true if the job was found and removed from the `Scheduler`
-	Remove(*Job) bool
-
-	// Clear removes all of the jobs that have been added to the scheduler
-	Clear()
+	// IsRunning returns true if the job  has started
+	IsRunning() bool
 
 	// Location sets the default location of every job created with `Every`.
 	// The default location is `time.Local`
@@ -33,14 +25,23 @@ type Scheduler interface {
 	// NextRun returns the next next job to be run and the time in which it will be run
 	NextRun() (*Job, time.Time)
 
+	// Remove removes an individual job from the scheduler. It returns true if the job was found and removed from the `Scheduler`
+	Remove(*Job) bool
+
 	// RunAll runs all of the jobs regardless of wether or not they are pending
 	RunAll()
+
+	// RunAllWithDelay runs all of the jobs regardless of wether or not they are pending with a delay
+	RunAllWithDelay(time.Duration)
 
 	// RunPending runs all of the pending jobs
 	RunPending()
 
-	// RunAllWithDelay runs all of the jobs regardless of wether or not they are pending with a delay
-	RunAllWithDelay(time.Duration)
+	// Start starts the scheduler
+	Start()
+
+	// Stop stops the scheduler from executing jobs
+	Stop()
 }
 
 // NewScheduler create a new scheduler.
@@ -94,7 +95,18 @@ func (s *scheduler) Every(interval uint64) *Job {
 	defer s.mutex.Unlock()
 
 	job := newJob(interval).Location(s.location)
-	s.jobs = append(s.jobs, job) // TODO: make this a binary insert
+	s.jobs = append(s.jobs, job)
+
+	// inserion sort by 'interval'
+	for i := 1; i < len(s.jobs); i++ {
+		tmp := s.jobs[i]
+		j := i - 1
+		for j >= 0 && s.jobs[j].interval > tmp.interval {
+			s.jobs[j+1] = s.jobs[j]
+			j = j - 1
+		}
+		s.jobs[j+1] = tmp
+	}
 
 	return job
 }
@@ -165,7 +177,6 @@ func (s *scheduler) Remove(j *Job) bool {
 	s.mutex.Lock()
 	defer s.mutex.Unlock()
 
-	// TODO: make this a binary search based removal
 	for i, job := range s.jobs {
 		if j == job {
 			// fix potential memory leak problem arrcording to:

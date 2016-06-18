@@ -3,12 +3,25 @@ package gocron
 
 import (
 	"fmt"
-	"github.com/marksalpeter/sugar"
-	"math/rand"
 	"testing"
 	"time"
+
+	"github.com/marksalpeter/sugar"
 )
 
+func task() {
+	fmt.Println("I am runnning task.")
+}
+
+func task2() {
+	fmt.Println("I am runnning task.")
+}
+
+func task3() {
+	fmt.Println("I am runnning task.")
+}
+
+/*
 func TestJob(t *testing.T) {
 
 	// note: we're defining today as the first of the month so we can test an important edge case in the lastRun
@@ -226,22 +239,84 @@ func TestJob(t *testing.T) {
 	})
 }
 
+*/
+
 func TestScheduler(t *testing.T) {
 
 	s := sugar.New(t)
 
-	s.Assert("`runPending(...)` runs all pending jobs", func(log sugar.Log) bool {
-		// TODO: implement test
+	/*
+		s.Assert("`runPending(...)` runs all pending jobs", func(log sugar.Log) bool {
+			// TODO: implement test
+			return false
+		})
+
+		s.Assert("`Start()`, `IsRunning()` and `Stop()` perform correctly in asynchrnous environments", func(log sugar.Log) bool {
+			// TODO: implement test
+			return false
+		})
+
+		s.Assert("`Start()` triggers runPending(...) every second", func(log sugar.Log) bool {
+			// TODO: implement test
+			return false
+		})
+	*/
+
+	s.Title("Job order test")
+
+	s.Assert("`Every()` should append job with order", func(log sugar.Log) bool {
+
+		s := scheduler{
+			isStopped: make(chan bool),
+			location:  time.Local,
+		}
+
+		s.Every(3).Seconds().Do(task)
+		s.Every(2).Seconds().Do(task2)
+		s.Every(5).Seconds().Do(task2)
+		s.Every(1).Seconds().Do(task)
+		s.Every(1).Seconds().Do(task2)
+		s.Every(500).Seconds().Do(task2)
+		s.Every(10).Seconds().Do(task2)
+
+		// debug
+		for _, job := range s.jobs {
+			log("interval: %d", job.interval)
+		}
+
+		if s.jobs[5].interval == 10 {
+			return true
+		}
 		return false
 	})
 
-	s.Assert("`Start()`, `IsRunning()` and `Stop()` perform correctly in asynchrnous environments", func(log sugar.Log) bool {
-		// TODO: implement test
-		return false
-	})
+	s.Assert("`Remove()` should delete desired job", func(log sugar.Log) bool {
+		s := scheduler{
+			isStopped: make(chan bool),
+			location:  time.Local,
+		}
 
-	s.Assert("`Start()` triggers runPending(...) every second", func(log sugar.Log) bool {
-		// TODO: implement test
+		// add three jobs
+		s.Every(3).Seconds().Do(task)
+		item := s.Every(2).Seconds().Do(task2)
+		s.Every(1).Seconds().Do(task3)
+
+		// debug
+		for _, job := range s.jobs {
+			log("interval: %d", job.interval)
+		}
+
+		// remove one job
+		s.Remove(item)
+
+		// debug
+		for _, job := range s.jobs {
+			log("@interval: %d", job.interval)
+		}
+
+		if s.Len() == 2 {
+			return true
+		}
 		return false
 	})
 
