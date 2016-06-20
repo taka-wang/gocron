@@ -277,7 +277,7 @@ func TestScheduler(t *testing.T) {
 		}
 		s.EveryWithName(1, "hello").Seconds().Do(taskWithParams, 1, "1s-hello")
 		s.EveryWithName(1, "world").Seconds().Do(taskWithParams, 1, "1s-world")
-		fmt.Println("enable scheduler")
+		fmt.Println("Enable scheduler")
 		s.Start()
 		time.Sleep(2 * time.Second)
 		fmt.Println("RemoveWithName")
@@ -294,7 +294,7 @@ func TestScheduler(t *testing.T) {
 		}
 		s.EveryWithName(2, "hello").Seconds().Do(taskWithParams, 2, "2s-hello")
 		s.EveryWithName(2, "world").Seconds().Do(taskWithParams, 2, "2s-world")
-		fmt.Println("enable scheduler")
+		fmt.Println("Enable scheduler")
 		/*
 			for i, v := range s.jobMap {
 				fmt.Println(i, v.enabled)
@@ -302,7 +302,7 @@ func TestScheduler(t *testing.T) {
 		*/
 		s.Start()
 		time.Sleep(4 * time.Second)
-		fmt.Println("update job `world`", time.Now().Format("2006-01-02 15:04:05.000"))
+		fmt.Println("update job `world` from 2 secs to 3 secs", time.Now().Format("2006-01-02 15:04:05.000"))
 		s.EveryWithName(3, "world").Seconds().Do(taskWithParams, 3, "3s-world")
 		/*
 			for i, v := range s.jobMap {
@@ -323,7 +323,7 @@ func TestScheduler(t *testing.T) {
 		}
 		s.EveryWithName(2, "hello").Seconds().Do(taskWithParams, 2, "2s-hello")
 		s.EveryWithName(2, "world").Seconds().Do(taskWithParams, 2, "2s-world")
-		fmt.Println("enable scheduler")
+		fmt.Println("Enable scheduler")
 		/*
 			for i, v := range s.jobMap {
 				fmt.Println(i, v.enabled)
