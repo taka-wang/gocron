@@ -89,22 +89,26 @@ func EveryWithName(interval uint64, name string) *Job {
 }
 
 // Emergency schedules a new emergency job in the default scheduler
+// i.e. add a one-time job to the scheduler and execute it immediately.
 func Emergency() *Job {
 	return defaultScheduler.Emergency()
 }
 
 // RunPending Runs all of the jobs that are scheduled to run
+// Note! you should call 'Start()' instead of this function directly.
 func RunPending() {
 	defaultScheduler.RunPending()
 }
 
 // RunAll runs all jobs of the regardless if they are scheduled to run or not.
 // i.e., runs all jobs immediately
+// Note! you should call 'Start()' instead of this function directly.
 func RunAll() {
 	defaultScheduler.RunAll()
 }
 
 // RunAllWithDelay runs all of the jobs with a delay between each of them
+// Note! you should call 'Start()' instead of this function directly.
 func RunAllWithDelay(d time.Duration) {
 	defaultScheduler.RunAllWithDelay(d)
 }
