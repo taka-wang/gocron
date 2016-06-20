@@ -256,6 +256,9 @@ func (s *scheduler) Remove(j *Job) bool {
 
 // RemoveWithName removes an individual job from the scheduler by name
 func (s *scheduler) RemoveWithName(name string) bool {
+	s.mutex.Lock()
+	defer s.mutex.Unlock()
+
 	if job, ok := s.jobMap[name]; ok {
 		s.Remove(job)
 		return true
@@ -265,6 +268,9 @@ func (s *scheduler) RemoveWithName(name string) bool {
 
 // PauseWithName disable job by name
 func (s *scheduler) PauseWithName(name string) bool {
+	s.mutex.Lock()
+	defer s.mutex.Unlock()
+
 	if job, ok := s.jobMap[name]; ok {
 		job.pause()
 		return true
@@ -274,6 +280,9 @@ func (s *scheduler) PauseWithName(name string) bool {
 
 // ResumeWithName enable job by name
 func (s *scheduler) ResumeWithName(name string) bool {
+	s.mutex.Lock()
+	defer s.mutex.Unlock()
+
 	if job, ok := s.jobMap[name]; ok {
 		job.resume()
 		return true
