@@ -91,19 +91,19 @@ func Remove(j *Job) {
 	defaultScheduler.Remove(j)
 }
 
-// RemoveName removes an individual job from the default scheduler
-func RemoveName(name string) {
-	defaultScheduler.RemoveName(name)
+// RemoveWithName removes an individual job from the default scheduler
+func RemoveWithName(name string) {
+	defaultScheduler.RemoveWithName(name)
 }
 
-// PauseName pause the job by name
-func PauseName(name string) {
-	defaultScheduler.PauseName(name)
+// PauseWithName pause the job by name
+func PauseWithName(name string) {
+	defaultScheduler.PauseWithName(name)
 }
 
-// ResumeName resume the job by name
-func ResumeName(name string) {
-	defaultScheduler.ResumeName(name)
+// ResumeWithName resume the job by name
+func ResumeWithName(name string) {
+	defaultScheduler.ResumeWithName(name)
 }
 
 // NextRun gets the next running time

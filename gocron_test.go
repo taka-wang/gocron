@@ -286,7 +286,7 @@ func TestScheduler(t *testing.T) {
 		s.Start()
 		time.Sleep(4 * time.Second)
 		fmt.Println("pause job `hello`", time.Now().Format("2006-01-02 15:04:05.000"))
-		s.PauseName("hello")
+		s.PauseWithName("hello")
 		/*
 			for i, v := range s.jobMap {
 				fmt.Println(i, v.enabled)
@@ -294,7 +294,7 @@ func TestScheduler(t *testing.T) {
 		*/
 		time.Sleep(10 * time.Second)
 		fmt.Println("resume job `hello`", time.Now().Format("2006-01-02 15:04:05.000"))
-		s.ResumeName("hello")
+		s.ResumeWithName("hello")
 		/*
 			for i, v := range s.jobMap {
 				fmt.Println(i, v.enabled)

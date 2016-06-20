@@ -36,15 +36,15 @@ type Scheduler interface {
 	// if the job was found and removed from the `Scheduler`
 	Remove(*Job) bool
 
-	// RemoveName removes an individual job from the scheduler by name. It returns true
+	// RemoveWithName removes an individual job from the scheduler by name. It returns true
 	// if the job was found and removed from the `Scheduler`
-	RemoveName(string) bool
+	RemoveWithName(string) bool
 
-	// PauseName pause the job by name. It returns true if the job was found and set enabled
-	PauseName(string) bool
+	// PauseWithName pause an individual job by name. It returns true if the job was found and set enabled
+	PauseWithName(string) bool
 
-	// ResumeName resume the job by name. It returns true if the job was found and set enabled
-	ResumeName(string) bool
+	// ResumeWithName resume an individual job by name. It returns true if the job was found and set enabled
+	ResumeWithName(string) bool
 
 	// Depricated: RunAll runs all of the jobs regardless of wether or not
 	// they are pending
@@ -254,8 +254,8 @@ func (s *scheduler) Remove(j *Job) bool {
 	return false
 }
 
-// RemoveName removes an individual job from the scheduler by name
-func (s *scheduler) RemoveName(name string) bool {
+// RemoveWithName removes an individual job from the scheduler by name
+func (s *scheduler) RemoveWithName(name string) bool {
 	if job, ok := s.jobMap[name]; ok {
 		s.Remove(job)
 		return true
@@ -263,8 +263,8 @@ func (s *scheduler) RemoveName(name string) bool {
 	return false
 }
 
-// PauseName disable job by name
-func (s *scheduler) PauseName(name string) bool {
+// PauseWithName disable job by name
+func (s *scheduler) PauseWithName(name string) bool {
 	if job, ok := s.jobMap[name]; ok {
 		job.pause()
 		return true
@@ -272,8 +272,8 @@ func (s *scheduler) PauseName(name string) bool {
 	return false
 }
 
-// ResumeName enable job by name
-func (s *scheduler) ResumeName(name string) bool {
+// ResumeWithName enable job by name
+func (s *scheduler) ResumeWithName(name string) bool {
 	if job, ok := s.jobMap[name]; ok {
 		job.resume()
 		return true
