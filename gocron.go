@@ -81,7 +81,7 @@ func Stop() {
 	defaultScheduler.Stop()
 }
 
-// Clear removes all of the jobs from the
+// Clear removes all of the jobs from the default scheduler
 func Clear() {
 	defaultScheduler.Clear()
 }
@@ -96,12 +96,12 @@ func RemoveWithName(name string) {
 	defaultScheduler.RemoveWithName(name)
 }
 
-// PauseWithName pause the job by name
+// PauseWithName pause an individual job by name from the default scheduler
 func PauseWithName(name string) {
 	defaultScheduler.PauseWithName(name)
 }
 
-// ResumeWithName resume the job by name
+// ResumeWithName resume an individual job by name from the default scheduler
 func ResumeWithName(name string) {
 	defaultScheduler.ResumeWithName(name)
 }
