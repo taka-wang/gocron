@@ -31,6 +31,11 @@ func Every(interval uint64) *Job {
 	return defaultScheduler.Every(interval)
 }
 
+// EveryWithName schedules a new job in the default scheduler
+func EveryWithName(interval uint64, name string) *Job {
+	return defaultScheduler.EveryWithName(interval, name)
+}
+
 // Emergency schedules a new emergency job in the default scheduler
 func Emergency() *Job {
 	return defaultScheduler.Emergency()
@@ -84,6 +89,21 @@ func Clear() {
 // Remove removes the job from the default scheduler
 func Remove(j *Job) {
 	defaultScheduler.Remove(j)
+}
+
+// RemoveName removes an individual job from the default scheduler
+func RemoveName(name string) {
+	defaultScheduler.RemoveName(name)
+}
+
+// PauseName pause the job by name
+func PauseName(name string) {
+	defaultScheduler.PauseName(name)
+}
+
+// ResumeName resume the job by name
+func ResumeName(name string) {
+	defaultScheduler.ResumeName(name)
 }
 
 // NextRun gets the next running time

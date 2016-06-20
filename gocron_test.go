@@ -269,9 +269,45 @@ func TestScheduler(t *testing.T) {
 
 	s.Title("Job order test")
 
+	s.Assert("`Pause()` and `Resume()` should work", func(log sugar.Log) bool {
+		s := scheduler{
+			jobMap:    make(map[string]*Job),
+			isStopped: make(chan bool),
+			location:  time.Local,
+		}
+		s.EveryWithName(2, "hello").Seconds().Do(taskWithParams, 2, "2s-hello")
+		s.EveryWithName(2, "world").Seconds().Do(taskWithParams, 2, "2s-world")
+		fmt.Println("enable scheduler")
+		/*
+			for i, v := range s.jobMap {
+				fmt.Println(i, v.enabled)
+			}
+		*/
+		s.Start()
+		time.Sleep(4 * time.Second)
+		fmt.Println("pause job `hello`", time.Now().Format("2006-01-02 15:04:05.000"))
+		s.PauseName("hello")
+		/*
+			for i, v := range s.jobMap {
+				fmt.Println(i, v.enabled)
+			}
+		*/
+		time.Sleep(10 * time.Second)
+		fmt.Println("resume job `hello`", time.Now().Format("2006-01-02 15:04:05.000"))
+		s.ResumeName("hello")
+		/*
+			for i, v := range s.jobMap {
+				fmt.Println(i, v.enabled)
+			}
+		*/
+		time.Sleep(10 * time.Second)
+		return true
+	})
+
 	s.Assert("`Every()` should append job with order", func(log sugar.Log) bool {
 
 		s := scheduler{
+			jobMap:    make(map[string]*Job),
 			isStopped: make(chan bool),
 			location:  time.Local,
 		}
@@ -279,14 +315,19 @@ func TestScheduler(t *testing.T) {
 		s.Every(3).Seconds().Do(taskWithParams, 1, "3s")
 		s.Every(2).Seconds().Do(taskWithParams, 2, "2s")
 		s.Every(5).Seconds().Do(taskWithParams, 3, "5s")
-		s.Every(1).Seconds().Do(taskWithParams, 4, "1s-4")
-		s.Every(1).Seconds().Do(taskWithParams, 5, "1s-5")
+		s.EveryWithName(1, "hello").Seconds().Do(taskWithParams, 4, "1s-4")
+		s.EveryWithName(1, "world").Seconds().Do(taskWithParams, 5, "1s-5")
 		s.Every(500).Seconds().Do(taskWithParams, 6, "500s")
 
 		s.Every(10).Seconds().Do(taskWithParams, 7, "10s")
 		for _, job := range s.jobs {
 			log("@interval: %d, param: %s", job.interval, job.tasksParams[0])
 		}
+
+		for i, v := range s.jobMap {
+			fmt.Printf("map: %s, %p\n", i, v)
+		}
+
 		s.Start()
 
 		fmt.Println("add emergency job 8", time.Now().Format("2006-01-02 15:04:05.000"))

@@ -12,11 +12,14 @@ type Scheduler interface {
 	// Clear removes all of the jobs that have been added to the scheduler
 	Clear()
 
+	// Emergency create a emergency job, and adds it to the `Scheduler`
+	Emergency() *Job
+
 	// Every creates a new job, and adds it to the `Scheduler`
 	Every(interval uint64) *Job
 
-	// Emergency create a emergency job, and adds it to the `Scheduler`
-	Emergency() *Job
+	// EveryWithName creates a new job, and adds it to the `Scheduler` and job Map
+	EveryWithName(interval uint64, name string) *Job
 
 	// IsRunning returns true if the job  has started
 	IsRunning() bool
@@ -32,6 +35,16 @@ type Scheduler interface {
 	// Remove removes an individual job from the scheduler. It returns true
 	// if the job was found and removed from the `Scheduler`
 	Remove(*Job) bool
+
+	// RemoveName removes an individual job from the scheduler by name. It returns true
+	// if the job was found and removed from the `Scheduler`
+	RemoveName(string) bool
+
+	// PauseName pause the job by name. It returns true if the job was found and set enabled
+	PauseName(string) bool
+
+	// ResumeName resume the job by name. It returns true if the job was found and set enabled
+	ResumeName(string) bool
 
 	// Depricated: RunAll runs all of the jobs regardless of wether or not
 	// they are pending
@@ -55,6 +68,7 @@ type Scheduler interface {
 // Note: the current implementation is not concurrency safe.
 func NewScheduler() Scheduler {
 	return &scheduler{
+		jobMap:    make(map[string]*Job),
 		isStopped: make(chan bool),
 		location:  time.Local,
 	}
@@ -62,6 +76,7 @@ func NewScheduler() Scheduler {
 
 // Scheduler contains jobs and a loop to run the jobs
 type scheduler struct {
+	jobMap    map[string]*Job
 	ejobs     []*Job // Emergency jobs
 	jobs      []*Job
 	isRunning bool
@@ -122,6 +137,29 @@ func (s *scheduler) Every(interval uint64) *Job {
 	return job
 }
 
+// Add job name and job object to jobMap
+func (s *scheduler) EveryWithName(interval uint64, name string) *Job {
+	s.mutex.Lock()
+	defer s.mutex.Unlock()
+
+	job := newJob(interval).Location(s.location)
+	s.jobMap[name] = job
+	s.jobs = append(s.jobs, job)
+
+	// inserion sort by 'interval'
+	for i := 1; i < len(s.jobs); i++ {
+		tmp := s.jobs[i]
+		j := i - 1
+		for j >= 0 && s.jobs[j].interval > tmp.interval {
+			s.jobs[j+1] = s.jobs[j]
+			j = j - 1
+		}
+		s.jobs[j+1] = tmp
+	}
+
+	return job
+}
+
 // Emergency schedules a new emergency job
 func (s *scheduler) Emergency() *Job {
 	s.mutex.Lock()
@@ -156,7 +194,8 @@ func (s *scheduler) runPending(now time.Time) {
 		if job.shouldRun(now) {
 			job.run()
 		} else {
-			break
+			// intend to loop through
+			continue
 		}
 	}
 }
@@ -212,6 +251,33 @@ func (s *scheduler) Remove(j *Job) bool {
 		}
 	}
 
+	return false
+}
+
+// RemoveName removes an individual job from the scheduler by name
+func (s *scheduler) RemoveName(name string) bool {
+	if job, ok := s.jobMap[name]; ok {
+		s.Remove(job)
+		return true
+	}
+	return false
+}
+
+// PauseName disable job by name
+func (s *scheduler) PauseName(name string) bool {
+	if job, ok := s.jobMap[name]; ok {
+		job.pause()
+		return true
+	}
+	return false
+}
+
+// ResumeName enable job by name
+func (s *scheduler) ResumeName(name string) bool {
+	if job, ok := s.jobMap[name]; ok {
+		job.resume()
+		return true
+	}
 	return false
 }
 
