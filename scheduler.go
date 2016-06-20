@@ -142,6 +142,19 @@ func (s *scheduler) EveryWithName(interval uint64, name string) *Job {
 	s.mutex.Lock()
 	defer s.mutex.Unlock()
 
+	// if job exist, remove it;
+	if oldJob, ok := s.jobMap[name]; ok {
+		// we don't call s.Remove since it cause deadlock
+		for i, job := range s.jobs {
+			if oldJob == job {
+				copy(s.jobs[i:], s.jobs[i+1:])
+				s.jobs[len(s.jobs)-1] = nil
+				s.jobs = s.jobs[:len(s.jobs)-1]
+			}
+		}
+	}
+
+	// create/update job to job list and job map
 	job := newJob(interval).Location(s.location)
 	s.jobMap[name] = job
 	s.jobs = append(s.jobs, job)
@@ -259,9 +272,16 @@ func (s *scheduler) RemoveWithName(name string) bool {
 	s.mutex.Lock()
 	defer s.mutex.Unlock()
 
-	if job, ok := s.jobMap[name]; ok {
-		s.Remove(job)
-		return true
+	if dJob, ok := s.jobMap[name]; ok {
+		// we don't call s.Remove since it cause deadlock
+		for i, job := range s.jobs {
+			if dJob == job {
+				copy(s.jobs[i:], s.jobs[i+1:])
+				s.jobs[len(s.jobs)-1] = nil
+				s.jobs = s.jobs[:len(s.jobs)-1]
+				return true
+			}
+		}
 	}
 	return false
 }

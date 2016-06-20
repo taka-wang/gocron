@@ -269,6 +269,52 @@ func TestScheduler(t *testing.T) {
 
 	s.Title("Job order test")
 
+	s.Assert("`RemoveWithName()` should not raise a deadlock", func(log sugar.Log) bool {
+		s := scheduler{
+			jobMap:    make(map[string]*Job),
+			isStopped: make(chan bool),
+			location:  time.Local,
+		}
+		s.EveryWithName(1, "hello").Seconds().Do(taskWithParams, 1, "1s-hello")
+		s.EveryWithName(1, "world").Seconds().Do(taskWithParams, 1, "1s-world")
+		fmt.Println("enable scheduler")
+		s.Start()
+		time.Sleep(2 * time.Second)
+		fmt.Println("RemoveWithName")
+		s.RemoveWithName("world")
+		time.Sleep(2 * time.Second)
+		return true
+	})
+
+	s.Assert("`EveryWithName()` should update interval", func(log sugar.Log) bool {
+		s := scheduler{
+			jobMap:    make(map[string]*Job),
+			isStopped: make(chan bool),
+			location:  time.Local,
+		}
+		s.EveryWithName(2, "hello").Seconds().Do(taskWithParams, 2, "2s-hello")
+		s.EveryWithName(2, "world").Seconds().Do(taskWithParams, 2, "2s-world")
+		fmt.Println("enable scheduler")
+		/*
+			for i, v := range s.jobMap {
+				fmt.Println(i, v.enabled)
+			}
+		*/
+		s.Start()
+		time.Sleep(4 * time.Second)
+		fmt.Println("update job `world`", time.Now().Format("2006-01-02 15:04:05.000"))
+		s.EveryWithName(3, "world").Seconds().Do(taskWithParams, 3, "3s-world")
+		/*
+			for i, v := range s.jobMap {
+				fmt.Println(i, v.enabled)
+			}
+		*/
+		fmt.Println("job lengh", len(s.jobs))
+		time.Sleep(10 * time.Second)
+
+		return true
+	})
+
 	s.Assert("`Pause()` and `Resume()` should work", func(log sugar.Log) bool {
 		s := scheduler{
 			jobMap:    make(map[string]*Job),
