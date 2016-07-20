@@ -1,7 +1,7 @@
 pipeline:
     build:
-        image: golang
+        image: takawang/psmb
         commands:
             - go get
-            - go build
             - go test -v
+            - go build
