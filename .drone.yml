@@ -5,6 +5,6 @@ pipeline:
     build:
         image: golang
         commands:
-            - go get github.com/takawang/sugar
+            - go test -v -bench . -benchmem
             - go test -v
             - go build
