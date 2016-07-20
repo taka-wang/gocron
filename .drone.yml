@@ -1,8 +1,9 @@
 workspace:
     base: /go
+
 pipeline:
     build:
-        image: golang
+        image: takawang/psmb
         commands:
             - go get
             - go test -v

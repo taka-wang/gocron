@@ -6,7 +6,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/marksalpeter/sugar"
+	"github.com/takawang/sugar"
 )
 
 func task() {
