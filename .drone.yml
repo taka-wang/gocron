@@ -3,8 +3,8 @@ workspace:
 
 pipeline:
     build:
-        image: takawang/psmb
+        image: golang
         commands:
-            - go get
+            - go get github.com/takawang/sugar
             - go test -v
             - go build
