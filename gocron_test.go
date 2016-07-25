@@ -283,6 +283,8 @@ func TestScheduler(t *testing.T) {
 			fmt.Println(i, v.enabled)
 		}
 
+		fmt.Println(len(s.jobs))
+
 		s.Start()
 		time.Sleep(2 * time.Second)
 		fmt.Println("RemoveWithName")
@@ -293,6 +295,8 @@ func TestScheduler(t *testing.T) {
 		for i, v := range s.jobMap {
 			fmt.Println(i, v.enabled)
 		}
+
+		fmt.Println(len(s.jobs))
 
 		time.Sleep(2 * time.Second)
 		return true
