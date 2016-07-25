@@ -321,6 +321,7 @@ func TestScheduler(t *testing.T) {
 		time.Sleep(4 * time.Second)
 		fmt.Println("update job `world` from 2 secs to 3 secs", time.Now().Format("2006-01-02 15:04:05.000"))
 		s.EveryWithName(3, "world").Seconds().Do(taskWithParams, 3, "3s-world")
+		s.EveryWithName(3, "hello1").Seconds().Do(taskWithParams, 3, "3s-hello1")
 		/*
 			for i, v := range s.jobMap {
 				fmt.Println(i, v.enabled)
