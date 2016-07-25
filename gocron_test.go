@@ -278,10 +278,20 @@ func TestScheduler(t *testing.T) {
 		s.EveryWithName(1, "hello").Seconds().Do(taskWithParams, 1, "1s-hello")
 		s.EveryWithName(1, "world").Seconds().Do(taskWithParams, 1, "1s-world")
 		fmt.Println("Enable scheduler")
+
+		for i, v := range s.jobMap {
+			fmt.Println(i, v.enabled)
+		}
+
 		s.Start()
 		time.Sleep(2 * time.Second)
 		fmt.Println("RemoveWithName")
 		s.RemoveWithName("world")
+
+		for i, v := range s.jobMap {
+			fmt.Println(i, v.enabled)
+		}
+
 		time.Sleep(2 * time.Second)
 		return true
 	})
