@@ -317,12 +317,22 @@ func TestScheduler(t *testing.T) {
 				fmt.Println(i, v.enabled)
 			}
 		*/
+
+		for i, v := range s.jobMap {
+			fmt.Println(i, v.interval)
+		}
+
 		s.Start()
 		time.Sleep(4 * time.Second)
 		fmt.Println("update job `world` from 2 secs to 3 secs", time.Now().Format("2006-01-02 15:04:05.000"))
 		s.EveryWithName(3, "world").Seconds().Do(taskWithParams, 3, "3s-world")
 		s.UpdateIntervalWithName("hello1", 3)
 		s.UpdateIntervalWithName("hello", 1)
+		time.Sleep(3 * time.Second)
+
+		for i, v := range s.jobMap {
+			fmt.Println(i, v.interval)
+		}
 
 		/*
 			for i, v := range s.jobMap {
@@ -349,6 +359,7 @@ func TestScheduler(t *testing.T) {
 				fmt.Println(i, v.enabled)
 			}
 		*/
+
 		s.Start()
 		time.Sleep(4 * time.Second)
 		fmt.Println("pause job `hello`", time.Now().Format("2006-01-02 15:04:05.000"))
