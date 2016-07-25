@@ -279,6 +279,7 @@ func (s *scheduler) RemoveWithName(name string) bool {
 				copy(s.jobs[i:], s.jobs[i+1:])
 				s.jobs[len(s.jobs)-1] = nil
 				s.jobs = s.jobs[:len(s.jobs)-1]
+				delete(s.jobMap, name) // remove jobMap item
 				return true
 			}
 		}
