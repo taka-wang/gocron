@@ -300,6 +300,7 @@ func TestScheduler(t *testing.T) {
 		fmt.Println(len(s.jobs))
 
 		time.Sleep(2 * time.Second)
+		s.Stop()
 		return true
 	})
 
@@ -341,7 +342,7 @@ func TestScheduler(t *testing.T) {
 		*/
 		fmt.Println("job lengh", len(s.jobs))
 		time.Sleep(10 * time.Second)
-
+		s.Stop()
 		return true
 	})
 
@@ -378,6 +379,7 @@ func TestScheduler(t *testing.T) {
 			}
 		*/
 		time.Sleep(10 * time.Second)
+		s.Stop()
 		return true
 	})
 
@@ -427,8 +429,10 @@ func TestScheduler(t *testing.T) {
 		}
 
 		if s.jobs[1].interval == 1 {
+			s.Stop()
 			return true
 		}
+		s.Stop()
 		return false
 	})
 
@@ -457,8 +461,10 @@ func TestScheduler(t *testing.T) {
 		}
 
 		if s.Len() == 2 {
+			s.Stop()
 			return true
 		}
+		s.Stop()
 		return false
 	})
 
