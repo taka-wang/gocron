@@ -36,6 +36,10 @@ type Scheduler interface {
 	// if the job was found and removed from the `Scheduler`
 	Remove(*Job) bool
 
+	// UpdateIntervalWithName update an individual job's interval from the scheduler by name.
+	// It returns true if the job was found and update interval
+	UpdateIntervalWithName(name string, interval uint64) bool
+
 	// RemoveWithName removes an individual job from the scheduler by name. It returns true
 	// if the job was found and removed from the `Scheduler`
 	RemoveWithName(string) bool
@@ -283,6 +287,18 @@ func (s *scheduler) RemoveWithName(name string) bool {
 				return true
 			}
 		}
+	}
+	return false
+}
+
+// UpdateIntervalWithName  update interval by name
+func (s *scheduler) UpdateIntervalWithName(name string, interval uint64) bool {
+	s.mutex.Lock()
+	defer s.mutex.Unlock()
+
+	if job, ok := s.jobMap[name]; ok {
+		job.updateInterval(interval)
+		return true
 	}
 	return false
 }

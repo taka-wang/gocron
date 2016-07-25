@@ -89,6 +89,11 @@ func (j *Job) resume() {
 	j.enabled = true
 }
 
+// updateInterval update interval
+func (j *Job) updateInterval(interval uint64) {
+	j.interval = interval
+}
+
 // should run returns true if the job should be run now
 func (j *Job) shouldRun(now time.Time) bool {
 	// check job is enabled or not
