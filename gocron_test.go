@@ -383,6 +383,43 @@ func TestScheduler(t *testing.T) {
 		return true
 	})
 
+	s.Assert("`PauseAll()` and `ResumeAll()` should work", func(log sugar.Log) bool {
+		s := scheduler{
+			jobMap:    make(map[string]*Job),
+			isStopped: make(chan bool),
+			location:  time.Local,
+		}
+		s.EveryWithName(2, "hello").Seconds().Do(taskWithParams, 2, "2s-hello")
+		s.EveryWithName(2, "world").Seconds().Do(taskWithParams, 2, "2s-world")
+		fmt.Println("Enable scheduler")
+		/*
+			for i, v := range s.jobMap {
+				fmt.Println(i, v.enabled)
+			}
+		*/
+
+		s.Start()
+		time.Sleep(4 * time.Second)
+		fmt.Println("pause all jobs", time.Now().Format("2006-01-02 15:04:05.000"))
+		s.PauseAll()
+		/*
+			for i, v := range s.jobMap {
+				fmt.Println(i, v.enabled)
+			}
+		*/
+		time.Sleep(10 * time.Second)
+		fmt.Println("resume all job", time.Now().Format("2006-01-02 15:04:05.000"))
+		s.ResumeAll()
+		/*
+			for i, v := range s.jobMap {
+				fmt.Println(i, v.enabled)
+			}
+		*/
+		time.Sleep(10 * time.Second)
+		s.Stop()
+		return true
+	})
+
 	s.Assert("`Every()` should append job with order", func(log sugar.Log) bool {
 
 		s := scheduler{
