@@ -47,8 +47,14 @@ type Scheduler interface {
 	// PauseWithName pause an individual job by name. It returns true if the job was found and set enabled
 	PauseWithName(string) bool
 
+	// PauseAll disable all jobs
+	PauseAll()
+
 	// ResumeWithName resume an individual job by name. It returns true if the job was found and set enabled
 	ResumeWithName(string) bool
+
+	// ResumeAll resume all jobs
+	ResumeAll()
 
 	// Depricated: RunAll runs all of the jobs regardless of wether or not
 	// they are pending
@@ -315,6 +321,16 @@ func (s *scheduler) PauseWithName(name string) bool {
 	return false
 }
 
+// PauseAll disable all jobs
+func (s *scheduler) PauseAll() {
+	s.mutex.Lock()
+	defer s.mutex.Unlock()
+
+	for k, v := range s.jobMap {
+		v.pause()
+	}
+}
+
 // ResumeWithName enable job by name
 func (s *scheduler) ResumeWithName(name string) bool {
 	s.mutex.Lock()
@@ -327,12 +343,23 @@ func (s *scheduler) ResumeWithName(name string) bool {
 	return false
 }
 
+// ResumeAll enable all jobs
+func (s *scheduler) ResumeAll() {
+	s.mutex.Lock()
+	defer s.mutex.Unlock()
+
+	for k, v := range s.jobMap {
+		v.resume()
+	}
+}
+
 // Clear deletes all scheduled jobs
 func (s *scheduler) Clear() {
 	s.mutex.Lock()
 	defer s.mutex.Unlock()
 
 	s.jobs = []*Job{}
+	s.jobMap = make(map[string]*Job) // new job map
 }
 
 // Start all the pending jobs
