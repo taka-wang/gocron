@@ -326,7 +326,7 @@ func (s *scheduler) PauseAll() {
 	s.mutex.Lock()
 	defer s.mutex.Unlock()
 
-	for k, v := range s.jobMap {
+	for _, v := range s.jobMap {
 		v.pause()
 	}
 }
@@ -348,7 +348,7 @@ func (s *scheduler) ResumeAll() {
 	s.mutex.Lock()
 	defer s.mutex.Unlock()
 
-	for k, v := range s.jobMap {
+	for _, v := range s.jobMap {
 		v.resume()
 	}
 }
