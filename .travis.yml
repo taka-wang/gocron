@@ -1,18 +1,16 @@
-sudo: required
-
 language: go
 
 go:
-	- 1.5
-	- tip
+    - 1.5
+    - tip
 
 before_install:
     - export TZ=Asia/Taipei
 
 script:
     - go get github.com/takawang/sugar
-	- go test -v -bench . -benchmem
+    - go test -v -bench . -benchmem
     - go build
 
 notifications:
-	email: false
+    email: false
