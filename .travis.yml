@@ -1,8 +1,5 @@
 sudo: required
 
-services:
-    - docker
-
 language: go
 
 go:
@@ -10,7 +7,7 @@ go:
 	- tip
 
 before_install:
-- export TZ=Asia/Taipei
+    - export TZ=Asia/Taipei
 
 script:
     - go get github.com/takawang/sugar
