@@ -271,11 +271,7 @@ func TestScheduler(t *testing.T) {
 	s.Title("Job order test")
 
 	s.Assert("`RemoveWithName()` should not raise a deadlock", func(log sugar.Log) bool {
-		s := gocron.scheduler{
-			jobMap:    make(map[string]*Job),
-			isStopped: make(chan bool),
-			location:  time.Local,
-		}
+		s := gocron.NewScheduler()
 		s.EveryWithName(1, "hello").Seconds().Do(taskWithParams, 1, "1s-hello")
 		s.EveryWithName(1, "world").Seconds().Do(taskWithParams, 1, "1s-world")
 		s.EveryWithName(2, "hello").Seconds().Do(taskWithParams, 1, "2s-hello")
@@ -306,11 +302,7 @@ func TestScheduler(t *testing.T) {
 	})
 
 	s.Assert("`EveryWithName()` should update interval", func(log sugar.Log) bool {
-		s := gocron.scheduler{
-			jobMap:    make(map[string]*Job),
-			isStopped: make(chan bool),
-			location:  time.Local,
-		}
+		s := gocron.NewScheduler()
 		s.EveryWithName(2, "hello").Seconds().Do(taskWithParams, 2, "2s-hello")
 		s.EveryWithName(2, "world").Seconds().Do(taskWithParams, 2, "2s-world")
 		fmt.Println("Enable scheduler")
@@ -348,11 +340,7 @@ func TestScheduler(t *testing.T) {
 	})
 
 	s.Assert("`Pause()` and `Resume()` should work", func(log sugar.Log) bool {
-		s := gocron.scheduler{
-			jobMap:    make(map[string]*Job),
-			isStopped: make(chan bool),
-			location:  time.Local,
-		}
+		s := gocron.NewScheduler()
 		s.EveryWithName(2, "hello").Seconds().Do(taskWithParams, 2, "2s-hello")
 		s.EveryWithName(2, "world").Seconds().Do(taskWithParams, 2, "2s-world")
 		fmt.Println("Enable scheduler")
@@ -385,11 +373,7 @@ func TestScheduler(t *testing.T) {
 	})
 
 	s.Assert("`PauseAll()` and `ResumeAll()` should work", func(log sugar.Log) bool {
-		s := gocron.scheduler{
-			jobMap:    make(map[string]*Job),
-			isStopped: make(chan bool),
-			location:  time.Local,
-		}
+		s := gocron.NewScheduler()
 		s.EveryWithName(2, "hello").Seconds().Do(taskWithParams, 2, "2s-hello")
 		s.EveryWithName(2, "world").Seconds().Do(taskWithParams, 2, "2s-world")
 		fmt.Println("Enable scheduler")
@@ -422,13 +406,7 @@ func TestScheduler(t *testing.T) {
 	})
 
 	s.Assert("`Every()` should append job with order", func(log sugar.Log) bool {
-
-		s := gocron.scheduler{
-			jobMap:    make(map[string]*Job),
-			isStopped: make(chan bool),
-			location:  time.Local,
-		}
-
+		s := gocron.NewScheduler()
 		s.Every(3).Seconds().Do(taskWithParams, 1, "3s")
 		s.Every(2).Seconds().Do(taskWithParams, 2, "2s")
 		s.Every(5).Seconds().Do(taskWithParams, 3, "5s")
@@ -475,10 +453,7 @@ func TestScheduler(t *testing.T) {
 	})
 
 	s.Assert("`Remove()` should delete desired job", func(log sugar.Log) bool {
-		s := gocron.scheduler{
-			isStopped: make(chan bool),
-			location:  time.Local,
-		}
+		s := gocron.NewScheduler()
 
 		// add three jobs
 		s.Every(3).Seconds().Do(task)
