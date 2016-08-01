@@ -6,7 +6,7 @@ import (
 	"testing"
 	"time"
 
-	. "github.com/taka-wang/gocron"
+	"github.com/taka-wang/gocron"
 	"github.com/takawang/sugar"
 )
 
@@ -271,7 +271,7 @@ func TestScheduler(t *testing.T) {
 	s.Title("Job order test")
 
 	s.Assert("`RemoveWithName()` should not raise a deadlock", func(log sugar.Log) bool {
-		s := scheduler{
+		s := gocron.scheduler{
 			jobMap:    make(map[string]*Job),
 			isStopped: make(chan bool),
 			location:  time.Local,
@@ -306,7 +306,7 @@ func TestScheduler(t *testing.T) {
 	})
 
 	s.Assert("`EveryWithName()` should update interval", func(log sugar.Log) bool {
-		s := scheduler{
+		s := gocron.scheduler{
 			jobMap:    make(map[string]*Job),
 			isStopped: make(chan bool),
 			location:  time.Local,
@@ -348,7 +348,7 @@ func TestScheduler(t *testing.T) {
 	})
 
 	s.Assert("`Pause()` and `Resume()` should work", func(log sugar.Log) bool {
-		s := scheduler{
+		s := gocron.scheduler{
 			jobMap:    make(map[string]*Job),
 			isStopped: make(chan bool),
 			location:  time.Local,
@@ -385,7 +385,7 @@ func TestScheduler(t *testing.T) {
 	})
 
 	s.Assert("`PauseAll()` and `ResumeAll()` should work", func(log sugar.Log) bool {
-		s := scheduler{
+		s := gocron.scheduler{
 			jobMap:    make(map[string]*Job),
 			isStopped: make(chan bool),
 			location:  time.Local,
@@ -423,7 +423,7 @@ func TestScheduler(t *testing.T) {
 
 	s.Assert("`Every()` should append job with order", func(log sugar.Log) bool {
 
-		s := scheduler{
+		s := gocron.scheduler{
 			jobMap:    make(map[string]*Job),
 			isStopped: make(chan bool),
 			location:  time.Local,
@@ -475,7 +475,7 @@ func TestScheduler(t *testing.T) {
 	})
 
 	s.Assert("`Remove()` should delete desired job", func(log sugar.Log) bool {
-		s := scheduler{
+		s := gocron.scheduler{
 			isStopped: make(chan bool),
 			location:  time.Local,
 		}
