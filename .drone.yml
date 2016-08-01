@@ -8,3 +8,4 @@ pipeline:
             - go get github.com/takawang/sugar
             - go test -v -bench . -benchmem
             - go build
+            - cd example && go build && ./example

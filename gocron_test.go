@@ -1,11 +1,11 @@
 // Tests for gocron
-package gocron
+package gocron_test
 
 import (
 	"fmt"
 	"testing"
 	"time"
-
+	. "github.com/taka-wang/gocron"
 	"github.com/takawang/sugar"
 )
 
