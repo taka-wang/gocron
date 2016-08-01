@@ -11,7 +11,7 @@ script:
     - go get github.com/takawang/sugar
     - go test -v -bench . -benchmem
     - go build
-    - cd example && go build && ./example
+    #- cd example && go build && ./example
 
 notifications:
     email: false
