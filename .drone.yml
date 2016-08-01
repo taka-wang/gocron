@@ -5,7 +5,8 @@ pipeline:
     build:
         image: golang
         commands:
-            - go get github.com/takawang/sugar
+            - go get -u github.com/taka-wang/gocron
+            #- go get github.com/takawang/sugar &&
             - go test -v -bench . -benchmem
             - go build
             - cd example && go build && ./example
